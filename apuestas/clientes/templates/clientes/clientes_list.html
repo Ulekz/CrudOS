@@ -1,0 +1,20 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Lista de Clientes{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>Lista de Clientes</h1>
+    <a href="{% url 'cliente_create' %}" class="nav-button">Agregar nuevo cliente</a>
+    <ul class="client-list">
+        {% for cliente in clientes %}
+            <li class="client-item">
+                <span class="client-name">{{ cliente.nombre }} {{ cliente.apellido_paterno }} {{ cliente.apellido_materno }}</span>
+                <a href="{% url 'cliente_detail' cliente.id %}" class="edit-button">Detalles</a>
+                <a href="{% url 'cliente_update' cliente.id %}" class="edit-button">Editar</a>
+                <a href="{% url 'cliente_delete' cliente.id %}" class="delete-button">Eliminar</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

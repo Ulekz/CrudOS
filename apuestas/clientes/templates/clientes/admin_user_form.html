@@ -1,0 +1,15 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Nuevo Usuario{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>Nuevo Usuario</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="button">Guardar</button>
+        <a href="{% url 'admin_user_list' %}" class="nav-button">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

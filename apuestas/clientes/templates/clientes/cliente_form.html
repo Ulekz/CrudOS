@@ -1,0 +1,38 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Formulario de Cliente{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>{{ form.instance.id|yesno:"Editar Cliente,Nuevo Cliente" }}</h2>
+    <form method="post" class="form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="nav-button">Guardar</button>
+    </form>
+    <button class="nav-button" onclick="location.href='{% url 'clientes_list' %}'">Cancelar</button>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const modeToggle = document.getElementById('mode-toggle');
+        const body = document.body;
+        const navbar = document.querySelector('.navbar');
+        const formContainers = document.querySelectorAll('.form-container, .form-container form input');
+
+        modeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
+            navbar.classList.toggle('dark-mode');
+            navbar.classList.toggle('light-mode');
+            formContainers.forEach(container => {
+                container.classList.toggle('dark-mode');
+                container.classList.toggle('light-mode');
+            });
+            modeToggle.textContent = body.classList.contains('dark-mode') ? 'Modo Claro' : 'Modo Oscuro';
+        });
+    });
+</script>
+{% endblock %}

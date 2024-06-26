@@ -1,0 +1,25 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Historial de Apuestas{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Historial de Apuestas</h2>
+    <table class="bet-history-table">
+        <thead>
+            <tr>
+                <th>Monto</th>
+                <th>Fecha</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for apuesta in apuestas %}
+            <tr>
+                <td>{{ apuesta.monto }}</td>
+                <td>{{ apuesta.fecha }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

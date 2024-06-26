@@ -1,0 +1,44 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Gestionar Publicidad{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Gestionar Publicidad</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="nav-button">Guardar</button>
+    </form>
+    <h3>Publicidad Izquierda</h3>
+    <ul class="ad-list">
+        {% for publicidad in publicidades_izquierda %}
+            <li class="ad-item">
+                {% if publicidad.archivo.url.endswith ".mp4" %}
+                    <video width="200" controls>
+                        <source src="{{ publicidad.archivo.url }}" type="video/mp4">
+                    </video>
+                {% else %}
+                    <img src="{{ publicidad.archivo.url }}" width="200" alt="Publicidad">
+                {% endif %}
+                <span class="ad-pos">{{ publicidad.posicion }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+    <h3>Publicidad Derecha</h3>
+    <ul class="ad-list">
+        {% for publicidad in publicidades_derecha %}
+            <li class="ad-item">
+                {% if publicidad.archivo.url.endswith ".mp4" %}
+                    <video width="200" controls>
+                        <source src="{{ publicidad.archivo.url }}" type="video/mp4">
+                    </video>
+                {% else %}
+                    <img src="{{ publicidad.archivo.url }}" width="200" alt="Publicidad">
+                {% endif %}
+                <span class="ad-pos">{{ publicidad.posicion }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

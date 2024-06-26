@@ -1,0 +1,15 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Lista de Apuestas{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Lista de Apuestas</h2>
+    <button class="nav-button" onclick="location.href='{% url 'apuesta_create' %}'">Agregar nueva apuesta</button>
+    <ul>
+        {% for apuesta in apuestas %}
+            <li>{{ apuesta.cliente.nombre }} - {{ apuesta.monto }} ({{ apuesta.fecha }})</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

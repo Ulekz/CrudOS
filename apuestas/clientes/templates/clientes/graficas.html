@@ -1,0 +1,10 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Gráficas{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Gráficas</h2>
+    <img src="data:image/png;base64,{{ graphic }}" alt="Gráfica de Clientes Registrados" class="chart-img">
+</div>
+{% endblock %}

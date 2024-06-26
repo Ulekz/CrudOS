@@ -1,0 +1,15 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Publicidad{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>¿Estás seguro que deseas eliminar esta publicidad?</h2>
+    <p>{{ publicidad.titulo }}</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="delete-button">Eliminar</button>
+    </form>
+    <a href="{% url 'lista_publicidad' %}" class="nav-button">Cancelar</a>
+</div>
+{% endblock %}

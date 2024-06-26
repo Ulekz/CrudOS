@@ -1,0 +1,14 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Perfil del Cliente{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Perfil del Cliente</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="nav-button">Guardar Cambios</button>
+    </form>
+</div>
+{% endblock %}

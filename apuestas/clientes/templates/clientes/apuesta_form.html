@@ -1,0 +1,18 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Nueva Apuesta{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Nueva Apuesta</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-group">
+            {{ form.monto.label_tag }} {{ form.monto }}
+        </div>
+        <button type="submit" class="nav-button">Guardar</button>
+        <a href="{% url 'apuestas_list' %}" class="nav-button">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

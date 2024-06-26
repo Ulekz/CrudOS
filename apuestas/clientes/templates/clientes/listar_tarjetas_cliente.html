@@ -1,0 +1,17 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Lista de Tarjetas{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>Lista de Tarjetas</h1>
+    <ul class="card-list">
+        {% for tarjeta in tarjetas %}
+            <li class="card-item">
+                <span class="card-holder">{{ tarjeta.nombre_titular }}</span> - **** **** **** {{ tarjeta.numero_tarjeta|slice:"-4" }} (Expira: {{ tarjeta.fecha_expiracion }})
+            </li>
+        {% endfor %}
+    </ul>
+    <button class="nav-button" onclick="location.href='{% url 'agregar_tarjeta' %}'">Agregar Nueva Tarjeta</button>
+</div>
+{% endblock %}

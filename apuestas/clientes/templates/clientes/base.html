@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Mi Aplicación de Apuestas{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body class="light-mode">
+    <header>
+        <nav class="navbar light-mode">
+            <div class="navbar-brand">
+                <a href="{% url 'index' %}" class="nav-button">Inicio</a>
+            </div>
+            <ul>
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <li><a href="{% url 'admin_dashboard' %}" class="nav-button">Dashboard Admin</a></li>
+                        <li><a href="{% url 'clientes_list' %}" class="nav-button">Ver Clientes</a></li>
+                        <li><a href="{% url 'admin_user_list' %}" class="nav-button">Gestionar Usuarios</a></li>
+                        <li><a href="{% url 'generar_reporte_csv' %}" class="nav-button">Reporte CSV</a></li>
+                        <li><a href="{% url 'generar_reporte_excel' %}" class="nav-button">Reporte Excel</a></li>
+                        <li><a href="{% url 'graficas' %}" class="nav-button">Ver Gráficas</a></li>
+                        <li><a href="{% url 'listar_tarjetas' %}" class="nav-button">Ver Tarjetas</a></li>
+                        <li><a href="{% url 'lista_publicidad' %}" class="nav-button">Gestionar Publicidad</a></li>
+                        <li>
+                            <form id="logout-form-admin" action="{% url 'logout_admin' %}" method="post" style="display: none;">
+                                {% csrf_token %}
+                            </form>
+                            <a href="#" class="nav-button" onclick="document.getElementById('logout-form-admin').submit();">Cerrar Sesión (Admin)</a>
+                        </li>
+                    {% else %}
+                        <li><a href="{% url 'perfil_cliente' %}" class="nav-button">Perfil</a></li>
+                        <li><a href="{% url 'historial_apuestas' %}" class="nav-button">Historial de Apuestas</a></li>
+                        <li><a href="{% url 'apuesta_create' %}" class="nav-button">Nueva Apuesta</a></li>
+                        <li><a href="{% url 'mis_apuestas' %}" class="nav-button">Mis Apuestas</a></li>
+                        <li><a href="{% url 'listar_tarjetas_cliente' %}" class="nav-button">Ver Tarjetas</a></li>
+                        <li><a href="{% url 'agregar_tarjeta' %}" class="nav-button">Agregar Tarjeta</a></li>
+                        <li>
+                            <form id="logout-form" action="{% url 'logout_cliente' %}" method="post" style="display: none;">
+                                {% csrf_token %}
+                            </form>
+                            <a href="#" class="nav-button" onclick="document.getElementById('logout-form').submit();">Cerrar Sesión</a>
+                        </li>
+                    {% endif %}
+                {% else %}
+                    <li><a href="{% url 'login_cliente' %}" class="nav-button">Iniciar Sesión</a></li>
+                    <li><a href="{% url 'login_admin' %}" class="nav-button">Iniciar Sesión como Admin</a></li>
+                    <li><a href="{% url 'registro_cliente' %}" class="nav-button">Registrarse</a></li>
+                    <li><a href="{% url 'password_reset' %}" class="nav-button">Restablecer Contraseña</a></li>
+                {% endif %}
+                <li><button id="mode-toggle" class="nav-button">Modo Oscuro</button></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <div class="publicidad-container">
+            <div class="publicidad-izquierda">
+                {% for publicidad in publicidades_izquierda %}
+                    <img src="{{ publicidad.archivo.url }}" alt="Publicidad">
+                {% endfor %}
+            </div>
+            <div class="content">
+                {% block content %}{% endblock %}
+            </div>
+            <div class="publicidad-derecha">
+                {% for publicidad in publicidades_derecha %}
+                    <img src="{{ publicidad.archivo.url }}" alt="Publicidad">
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modeToggle = document.getElementById('mode-toggle');
+            const body = document.body;
+            const navbar = document.querySelector('.navbar');
+            const formContainers = document.querySelectorAll('.form-container, .form-container form input');
+
+            modeToggle.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                body.classList.toggle('light-mode');
+                navbar.classList.toggle('dark-mode');
+                navbar.classList.toggle('light-mode');
+                formContainers.forEach(container => {
+                    container.classList.toggle('dark-mode');
+                    container.classList.toggle('light-mode');
+                });
+                modeToggle.textContent = body.classList.contains('dark-mode') ? 'Modo Claro' : 'Modo Oscuro';
+                localStorage.setItem('mode', body.classList.contains('dark-mode') ? 'dark' : 'light');
+            });
+
+            // Inicializa el modo según la preferencia guardada
+            if (localStorage.getItem('mode') === 'dark') {
+                body.classList.add('dark-mode');
+                body.classList.remove('light-mode');
+                navbar.classList.add('dark-mode');
+                navbar.classList.remove('light-mode');
+                formContainers.forEach(container => {
+                    container.classList.add('dark-mode');
+                    container.classList.remove('light-mode');
+                });
+                modeToggle.textContent = 'Modo Claro';
+            } else {
+                body.classList.add('light-mode');
+                body.classList.remove('dark-mode');
+                navbar.classList.add('light-mode');
+                navbar.classList.remove('dark-mode');
+                formContainers.forEach(container => {
+                    container.classList.add('light-mode');
+                    container.classList.remove('dark-mode');
+                });
+                modeToggle.textContent = 'Modo Oscuro';
+            }
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
