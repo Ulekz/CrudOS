@@ -1,0 +1,15 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Eliminar Imagen{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h1>¿Estás seguro de que deseas eliminar esta imagen?</h1>
+    <img src="{{ image.image.url }}" alt="{{ image.title }}">
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="delete-button">Eliminar</button>
+    </form>
+    <a href="{% url 'manage_images' %}" class="nav-button">Cancelar</a>
+</div>
+{% endblock %}

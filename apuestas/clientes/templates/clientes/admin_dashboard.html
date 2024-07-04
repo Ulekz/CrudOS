@@ -3,6 +3,7 @@
 {% block title %}Dashboard Admin{% endblock %}
 
 {% block content %}
+<!-- Contenedor principal del formulario del Dashboard Admin -->
 <div class="form-container">
     <a href="{% url 'clientes_list' %}" class="nav-button">Ver Clientes</a>
     <a href="{% url 'admin_user_list' %}" class="nav-button">Gestionar Usuarios</a>
@@ -10,6 +11,6 @@
     <a href="{% url 'generar_reporte_excel' %}" class="nav-button">Reporte Excel</a>
     <a href="{% url 'graficas' %}" class="nav-button">Ver Gráficas</a>
     <a href="{% url 'listar_tarjetas' %}" class="nav-button">Ver Tarjetas</a>
-    <a href="{% url 'lista_publicidad' %}" class="nav-button">Gestionar Publicidad</a>
+    <a href="{% url 'manage_images' %}" class="nav-button">Gestionar Publicidad</a>
 </div>
 {% endblock %}

@@ -3,9 +3,11 @@
 {% block title %}Inicio{% endblock %}
 
 {% block content %}
+<!-- Contenido principal de la página -->
 <div class="main-content">
     <h1>Bienvenido a la administración de apuestas</h1>
     <div class="dice-container">
+        <!-- Primer dado -->
         <div class="dice" id="dice1">
             <div class="front">1</div>
             <div class="back">2</div>
@@ -14,6 +16,7 @@
             <div class="top">5</div>
             <div class="bottom">6</div>
         </div>
+        <!-- Segundo dado -->
         <div class="dice" id="dice2">
             <div class="front">1</div>
             <div class="back">2</div>
@@ -28,5 +31,6 @@
 
 {% block scripts %}
     {% load static %}
+    <!-- Cargar el script del dado -->
     <script src="{% static 'js/dice.js' %}"></script>
 {% endblock %}

@@ -11,8 +11,8 @@
         <div class="form-group">
             {{ form.monto.label_tag }} {{ form.monto }}
         </div>
-        <button type="submit" class="nav-button">Guardar</button>
-        <a href="{% url 'apuestas_list' %}" class="nav-button">Cancelar</a>
+        <button type="submit" class="button">Guardar</button>
+        <a href="{% url 'apuestas_list' %}" class="nav-button cancel-button">Cancelar</a>
     </form>
 </div>
 {% endblock %}

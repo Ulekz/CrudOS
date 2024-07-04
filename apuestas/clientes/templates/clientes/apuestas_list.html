@@ -6,9 +6,11 @@
 <div class="form-container">
     <h2>Lista de Apuestas</h2>
     <button class="nav-button" onclick="location.href='{% url 'apuesta_create' %}'">Agregar nueva apuesta</button>
-    <ul>
+    <ul class="bet-list">
         {% for apuesta in apuestas %}
-            <li>{{ apuesta.cliente.nombre }} - {{ apuesta.monto }} ({{ apuesta.fecha }})</li>
+            <li class="bet-item">
+                <span>{{ apuesta.cliente.nombre }} - {{ apuesta.monto }} ({{ apuesta.fecha }})</span>
+            </li>
         {% endfor %}
     </ul>
 </div>

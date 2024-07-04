@@ -11,8 +11,8 @@
     <p><strong>Código Postal:</strong> {{ cliente.codigo_postal }}</p>
     <p><strong>Estado:</strong> {{ cliente.estado }}</p>
     <p><strong>Municipio:</strong> {{ cliente.municipio }}</p>
-    <p><strong>Estado Civil:</strong> {{ cliente.estado_civil }}</p>
-    <p><strong>Sexo:</strong> {{ cliente.sexo }}</p>
+    <p><strong>Estado Civil:</strong> {{ cliente.get_estado_civil_display }}</p>
+    <p><strong>Sexo:</strong> {{ cliente.get_sexo_display }}</p>
     <p><strong>Fecha de Nacimiento:</strong> {{ cliente.dia_nacimiento }}/{{ cliente.mes_nacimiento }}/{{ cliente.anio_nacimiento }}</p>
     <p><strong>Registrado el:</strong> {{ cliente.fecha_registro }}</p>
     <button class="nav-button" onclick="location.href='{% url 'clientes_list' %}'">Volver a la lista</button>

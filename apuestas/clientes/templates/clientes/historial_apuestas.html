@@ -16,7 +16,7 @@
             {% for apuesta in apuestas %}
             <tr>
                 <td>{{ apuesta.monto }}</td>
-                <td>{{ apuesta.fecha }}</td>
+                <td>{{ apuesta.fecha|date:"d/m/Y H:i" }}</td>
             </tr>
             {% endfor %}
         </tbody>

@@ -8,9 +8,9 @@
     <form method="post" class="form">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="nav-button">Guardar</button>
+        <button type="submit" class="button">Guardar</button>
+        <button type="button" class="nav-button cancel-button" onclick="location.href='{% url 'clientes_list' %}'">Cancelar</button>
     </form>
-    <button class="nav-button" onclick="location.href='{% url 'clientes_list' %}'">Cancelar</button>
 </div>
 {% endblock %}
 
@@ -32,7 +32,31 @@
                 container.classList.toggle('light-mode');
             });
             modeToggle.textContent = body.classList.contains('dark-mode') ? 'Modo Claro' : 'Modo Oscuro';
+            localStorage.setItem('mode', body.classList.contains('dark-mode') ? 'dark' : 'light');
         });
+
+        // Inicializa el modo según la preferencia guardada
+        if (localStorage.getItem('mode') === 'dark') {
+            body.classList.add('dark-mode');
+            body.classList.remove('light-mode');
+            navbar.classList.add('dark-mode');
+            navbar.classList.remove('light-mode');
+            formContainers.forEach(container => {
+                container.classList.add('dark-mode');
+                container.classList.remove('light-mode');
+            });
+            modeToggle.textContent = 'Modo Claro';
+        } else {
+            body.classList.add('light-mode');
+            body.classList.remove('dark-mode');
+            navbar.classList.add('light-mode');
+            navbar.classList.remove('dark-mode');
+            formContainers.forEach(container => {
+                container.classList.add('light-mode');
+                container.classList.remove('dark-mode');
+            });
+            modeToggle.textContent = 'Modo Oscuro';
+        }
     });
 </script>
 {% endblock %}

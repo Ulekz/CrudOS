@@ -1,0 +1,12 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Gráficas del Cliente{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Gráficas de tu Actividad</h2>
+    
+    <h3>Actividad del Cliente</h3>
+    <img src="data:image/png;base64,{{ graphic_activity }}" alt="Gráfica de Actividad del Cliente por Mes" class="chart-img">
+</div>
+{% endblock %}

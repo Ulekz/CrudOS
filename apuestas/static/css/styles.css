@@ -1,47 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Artmy+Ornament&display=swap');
+
+/* Definición de variables de colores y estilos */
 :root {
-    --primary-color: #4CAF50;
-    --secondary-color: #333;
-    --light-bg: #f9f9f9;
-    --dark-bg: #444;
-    --light-text: black;
-    --dark-text: white;
+    --primary-color: #e63946; /* Rojo vivo */
+    --secondary-color: #1d3557; /* Azul oscuro */
+    --accent-color: #f77f00; /* Naranja vivo */
+    --background-color: #ffffff; /* Blanco */
+    --text-color: #000000; /* Negro */
+    --light-bg: #f1faee; /* Azul muy claro */
+    --dark-bg: #1d3557; /* Azul oscuro */
+    --light-text: #1d3557; /* Azul oscuro */
+    --dark-text: #f1faee; /* Azul muy claro */
+    --dark-bg-gray: #1d3557; /* Azul oscuro */
+    --dark-secondary-gray: #457b9d; /* Azul medio */
+    --button-hover: #a8dadc; /* Azul claro */
+    --input-border: #e63946; /* Rojo vivo */
 }
 
+/* Estilos generales del cuerpo */
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Artmy Ornament', sans-serif;
     margin: 0;
     padding: 0;
     transition: background-color 0.3s, color 0.3s;
     text-align: center;
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-color);
+    background-image: url("/static/img/Fondo.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
 }
 
+/* Modo claro para el cuerpo */
 body.light-mode {
-    background-color: var(--light-bg);
-    color: var(--light-text);
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
+/* Modo oscuro para el cuerpo */
 body.dark-mode {
     background-color: var(--dark-bg);
     color: var(--dark-text);
 }
 
+/* Estilos del Navbar */
 .navbar {
+    background-color: var(--primary-color);
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 0 0 10px 10px;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
     transition: background-color 0.3s;
     flex-wrap: wrap;
 }
 
+/* Contenedor del Navbar */
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Estilo de la marca del Navbar */
+.navbar-brand {
+    font-family: 'Artmy Ornament', sans-serif;
+    font-size: 1.5rem;
+    
+    color: var(--background-color);
+    text-decoration: none;
+}
+
+/* Estilos de los enlaces del Navbar */
+.navbar-links {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Estilos de los enlaces y botones del Navbar */
+.nav-link,
+.nav-button {
+    color: var(--background-color);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    background-color: var(--primary-color);
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-block;
+    text-align: center;
+    margin: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-family: 'Artmy Ornament', sans-serif; /* Aplicar la fuente */
+}
+
+/* Efecto hover para los enlaces y botones del Navbar */
+.nav-link:hover,
+.nav-button:hover {
+    background-color: var(--accent-color);
+    transform: scale(1.05);
+}
+
+/* Modo claro para el Navbar */
 .navbar.light-mode {
-    background-color: var(--light-bg);
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
+/* Modo oscuro para el Navbar */
 .navbar.dark-mode {
-    background-color: var(--secondary-color);
+    background-color: var(--dark-secondary-gray);
+    color: var(--dark-text);
 }
 
+/* Estilos de la lista de enlaces del Navbar */
 .navbar ul {
     list-style-type: none;
     margin: 0;
@@ -51,68 +136,61 @@ body.dark-mode {
     justify-content: center;
 }
 
+/* Estilos de los elementos de la lista del Navbar */
 .navbar li {
     margin: 5px;
 }
 
-.navbar a,
-.nav-button {
-    color: var(--dark-text);
-    text-decoration: none;
-    padding: 10px 20px;
-    background-color: var(--primary-color);
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    display: inline-block;
-    text-align: center;
-    transition: background-color 0.3s, transform 0.3s;
-    border-radius: 25px;
-    margin: 5px;
-}
-
+/* Enlaces y botones del Navbar en modo claro */
 .navbar.light-mode a,
 .navbar.light-mode .nav-button {
-    color: var(--light-text);
+    color: var(--text-color);
 }
 
-.navbar a:hover,
-.nav-button:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-}
-
+/* Estilos del contenedor del formulario */
 .form-container {
-    max-width: 600px;
+    max-width: 800px;
     margin: 20px auto;
     padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
+    border: 1px solid var(--input-border);
+    border-radius: 15px;
     transition: background-color 0.3s, border-color 0.3s;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Artmy Ornament', sans-serif;
+    text-align: left;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
+/* Modo claro para el contenedor del formulario */
 .form-container.light-mode {
-    background-color: var(--light-bg);
+    background-color: var(--background-color);
     border-color: #ccc;
+    color: var(--text-color);
 }
 
+/* Modo oscuro para el contenedor del formulario */
 .form-container.dark-mode {
-    background-color: var(--dark-bg);
+    background-color: var(--dark-secondary-gray);
     border-color: #555;
+    color: var(--dark-text);
 }
 
+/* Estilos de los títulos dentro del contenedor del formulario */
 .form-container h2,
 .form-container h1 {
     text-align: center;
     margin-bottom: 20px;
 }
 
+/* Estilos del formulario */
 .form-container form {
     display: flex;
     flex-direction: column;
+    align-items: center;
 }
 
+/* Estilos de los campos del formulario */
 .form-container form input[type="text"],
 .form-container form input[type="email"],
 .form-container form input[type="password"],
@@ -120,12 +198,15 @@ body.dark-mode {
 .form-container form textarea {
     padding: 10px;
     margin: 10px 0;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border);
     border-radius: 5px;
     font-size: 16px;
+    width: 100%;
     transition: background-color 0.3s, border-color 0.3s;
+    color: var(--text-color);
 }
 
+/* Campos del formulario en modo oscuro */
 .form-container form input[type="text"].dark-mode,
 .form-container form input[type="email"].dark-mode,
 .form-container form input[type="password"].dark-mode,
@@ -136,334 +217,101 @@ body.dark-mode {
     color: var(--dark-text);
 }
 
+/* Estilos de los botones del formulario */
 .form-container form button {
     padding: 10px 20px;
     background-color: var(--primary-color);
-    color: var(--dark-text);
+    color: var(--background-color);
     border: none;
     cursor: pointer;
     font-size: 16px;
     border-radius: 25px;
     transition: background-color 0.3s, transform 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+    font-family: 'Artmy Ornament', sans-serif; /* Aplicar la fuente */
 }
 
+/* Efecto hover para los botones del formulario */
 .form-container form button:hover {
-    background-color: #45a049;
+    background-color: var(--accent-color);
     transform: scale(1.05);
 }
 
-.edit-button {
+/* Estilos de los botones de edición y eliminación */
+.edit-button, .delete-button {
     padding: 5px 10px;
     margin: 5px;
-    background-color: #2196F3;
-    color: var(--dark-text);
+    background-color: #e63946;
+    color: var(--background-color);
     border: none;
     cursor: pointer;
     font-size: 14px;
     border-radius: 25px;
     transition: background-color 0.3s, transform 0.3s;
+    font-family: 'Artmy Ornament', sans-serif; /* Aplicar la fuente */
 }
 
+/* Efecto hover para el botón de edición */
 .edit-button:hover {
-    background-color: #1976D2;
+    background-color: #f77f00;
     transform: scale(1.05);
 }
 
+/* Estilos del botón de eliminación */
 .delete-button {
-    padding: 5px 10px;
-    margin: 5px;
-    background-color: #f44336;
-    color: var(--dark-text);
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-    border-radius: 25px;
-    transition: background-color 0.3s, transform 0.3s;
+    background-color: #000000;
 }
 
+/* Efecto hover para el botón de eliminación */
 .delete-button:hover {
-    background-color: #d32f2f;
+    background-color: #e63946;
     transform: scale(1.05);
 }
 
+/* Estilos de los enlaces */
 .nav-link {
     color: var(--primary-color);
     text-decoration: none;
+    font-family: 'Artmy Ornament', sans-serif; /* Aplicar la fuente */
 }
 
+/* Efecto hover para los enlaces */
 .nav-link:hover {
     text-decoration: underline;
 }
 
-/* Estilos para los botones */
-.button, .nav-button, .edit-button, .delete-button {
-    padding: 10px 20px;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 25px;
-    transition: background-color 0.3s, transform 0.3s;
-    margin: 5px;
-}
-
-.nav-button {
-    background-color: #4CAF50;
-}
-
-.nav-button:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-}
-
-.edit-button {
-    background-color: #2196F3;
-}
-
-.edit-button:hover {
-    background-color: #1976D2;
-}
-
-.delete-button {
-    background-color: #f44336;
-}
-
-.delete-button:hover {
-    background-color: #d32f2f;
-}
-
-/* Estilos para el contenedor del formulario */
-.form-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s, border-color 0.3s;
-    font-family: 'Poppins', sans-serif;
-    color: black;
-}
-
-.form-container.light-mode {
-    background-color: #f9f9f9;
-    border-color: #ccc;
-    color: black;
-}
-
-.form-container.dark-mode {
-    background-color: #444;
-    border-color: #555;
-    color: white;
-}
-
-.form-container h1 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.client-list {
+/* Listas de clientes, tarjetas, imágenes y publicidad */
+.client-list, .card-list, .image-list, .ad-list, .apuesta-list {
     list-style-type: none;
     padding: 0;
 }
 
-.client-item {
+/* Elementos de las listas */
+.client-item, .card-item, .ad-item, .apuesta-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
     margin: 5px 0;
-    background-color: #f1f1f1;
+    background-color: var(--accent-color);
     border-radius: 5px;
     transition: background-color 0.3s;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.client-item:hover {
-    background-color: #e1e1e1;
+/* Efecto hover para los elementos de las listas */
+.client-item:hover, .card-item:hover, .ad-item:hover, .apuesta-item:hover {
+    background-color: var(--button-hover);
 }
 
-.client-name {
+/* Estilos de los nombres de clientes, titulares de tarjetas y posición de publicidad */
+.client-name, .card-holder, .ad-pos, .apuesta-info {
     font-weight: bold;
-    color: black;
+    color: var(--text-color);
 }
 
-.edit-button, .delete-button {
-    padding: 5px 10px;
-    margin-left: 10px;
-    text-decoration: none;
-    color: white;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-/* Estilos para los botones */
-.button, .nav-button, .edit-button, .delete-button {
-    padding: 10px 20px;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 25px;
-    transition: background-color 0.3s, transform 0.3s;
-    margin: 5px;
-}
-
-.nav-button {
-    background-color: #4CAF50;
-}
-
-.nav-button:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-}
-
-.edit-button {
-    background-color: #2196F3;
-}
-
-.edit-button:hover {
-    background-color: #1976D2;
-    transform: scale(1.05);
-}
-
-.delete-button {
-    background-color: #f44336;
-}
-
-.delete-button:hover {
-    background-color: #d32f2f;
-    transform: scale(1.05);
-}
-
-/* Estilos para el contenedor del formulario */
-.form-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s, border-color 0.3s;
-    font-family: 'Poppins', sans-serif;
-    color: black;
-}
-
-.form-container.light-mode {
-    background-color: #f9f9f9;
-    border-color: #ccc;
-    color: black;
-}
-
-.form-container.dark-mode {
-    background-color: #444;
-    border-color: #555;
-    color: white;
-}
-
-.form-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.form-container p {
-    margin: 10px 0;
-}
-
-.form-container form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.form-container form button,
-.form-container form .nav-button {
-    margin: 10px;
-}
-
-/* Estilos para los botones */
-.button, .nav-button, .edit-button, .delete-button {
-    padding: 10px 20px;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 25px;
-    transition: background-color 0.3s, transform 0.3s;
-    margin: 5px;
-}
-
-.nav-button {
-    background-color: #4CAF50;
-}
-
-.nav-button:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-}
-
-.edit-button {
-    background-color: #2196F3;
-}
-
-.edit-button:hover {
-    background-color: #1976D2;
-    transform: scale(1.05);
-}
-
-.delete-button {
-    background-color: #f44336;
-}
-
-.delete-button:hover {
-    background-color: #d32f2f;
-    transform: scale(1.05);
-}
-
-/* Estilos para el contenedor del formulario */
-.form-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s, border-color 0.3s;
-    font-family: 'Poppins', sans-serif;
-    color: black;
-}
-
-.form-container.light-mode {
-    background-color: #f9f9f9;
-    border-color: #ccc;
-    color: black;
-}
-
-.form-container.dark-mode {
-    background-color: #444;
-    border-color: #555;
-    color: white;
-}
-
-.form-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.form-container p {
-    margin: 10px 0;
-}
-
-.form-container form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.form-container form button,
-.form-container form .nav-button {
-    margin: 10px;
-}
-
+/* Estilos de las imágenes de las gráficas */
 .chart-img {
     display: block;
     margin: 0 auto;
@@ -472,376 +320,44 @@ body.dark-mode {
     border-radius: 10px;
 }
 
-/* Estilos para los botones */
-.button, .nav-button, .edit-button, .delete-button {
-    padding: 10px 20px;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 25px;
-    transition: background-color 0.3s, transform 0.3s;
-    margin: 5px;
-}
-
-.nav-button {
-    background-color: #4CAF50;
-}
-
-.nav-button:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-}
-
-.edit-button {
-    background-color: #2196F3;
-}
-
-.edit-button:hover {
-    background-color: #1976D2;
-    transform: scale(1.05);
-}
-
-.delete-button {
-    background-color: #f44336;
-}
-
-.delete-button:hover {
-    background-color: #d32f2f;
-    transform: scale(1.05);
-}
-
-/* Estilos para el contenedor del formulario */
-.form-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s, border-color 0.3s;
-    font-family: 'Poppins', sans-serif;
-    color: black;
-}
-
-.form-container.light-mode {
-    background-color: #f9f9f9;
-    border-color: #ccc;
-    color: black;
-}
-
-.form-container.dark-mode {
-    background-color: #444;
-    border-color: #555;
-    color: white;
-}
-
-.form-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.form-container p {
-    margin: 10px 0;
-}
-
-.form-container form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.form-container form button,
-.form-container form .nav-button {
-    margin: 10px;
-}
-
-/* Estilos para la tabla del historial de apuestas */
-.bet-history-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-}
-
-.bet-history-table th, .bet-history-table td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.bet-history-table th {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.bet-history-table tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-.bet-history-table tr:hover {
-    background-color: #ddd;
-}
-
-/* Estilos para los botones */
-.button, .nav-button, .edit-button, .delete-button {
-    padding: 10px 20px;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 25px;
-    transition: background-color 0.3s, transform 0.3s;
-    margin: 5px;
-}
-
-.nav-button {
-    background-color: #4CAF50;
-}
-
-.nav-button:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-}
-
-.edit-button {
-    background-color: #2196F3;
-}
-
-.edit-button:hover {
-    background-color: #1976D2;
-    transform: scale(1.05);
-}
-
-.delete-button {
-    background-color: #f44336;
-}
-
-.delete-button:hover {
-    background-color: #d32f2f;
-    transform: scale(1.05);
-}
-
-/* Estilos para el contenedor del formulario */
-.form-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s, border-color 0.3s;
-    font-family: 'Poppins', sans-serif;
-    color: black;
-}
-
-.form-container.light-mode {
-    background-color: #f9f9f9;
-    border-color: #ccc;
-    color: black;
-}
-
-.form-container.dark-mode {
-    background-color: #444;
-    border-color: #555;
-    color: white;
-}
-
-.form-container h1 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.card-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-.card-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    margin: 5px 0;
-    background-color: #f1f1f1;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.card-item:hover {
-    background-color: #e1e1e1;
-}
-
+/* Estilos del titular de la tarjeta */
 .card-holder {
     font-weight: bold;
-    color: black;
+    color: var(--text-color);
 }
 
-/* Estilos para los botones */
-.button, .nav-button, .edit-button, .delete-button {
-    padding: 10px 20px;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 25px;
-    transition: background-color 0.3s, transform 0.3s;
-    margin: 5px;
-}
-
-.nav-button {
-    background-color: #4CAF50;
-}
-
-.nav-button:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-}
-
-.edit-button {
-    background-color: #2196F3;
-}
-
-.edit-button:hover {
-    background-color: #1976D2;
-    transform: scale(1.05);
-}
-
-.delete-button {
-    background-color: #f44336;
-}
-
-.delete-button:hover {
-    background-color: #d32f2f;
-    transform: scale(1.05);
-}
-
-/* Estilos para el contenedor del formulario */
-.form-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s, border-color 0.3s;
-    font-family: 'Poppins', sans-serif;
-    color: black;
-}
-
-.form-container.light-mode {
-    background-color: #f9f9f9;
-    border-color: #ccc;
-    color: black;
-}
-
-.form-container.dark-mode {
-    background-color: #444;
-    border-color: #555;
-    color: white;
-}
-
-.form-container h2 {
+/* Estilos del Footer */
+footer {
+    background-color: var(--primary-color);
+    color: var(--light-text);
     text-align: center;
-    margin-bottom: 20px;
+    padding: 1rem 0;
+    
+    bottom: 0;
+    width: 100%;
 }
 
-.form-container form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
-.form-container form button,
-.form-container form .nav-button {
-    margin: 10px;
+.footer-content p {
+    margin: 0.5rem 0;
 }
 
-/* Estilos para los botones */
-.button, .nav-button, .edit-button, .delete-button {
-    padding: 10px 20px;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    border-radius: 25px;
-    transition: background-color 0.3s, transform 0.3s;
-    margin: 5px;
+.footer-content a {
+    color: var(--light-text);
+    margin: 0 0.5rem;
+    text-decoration: none;
 }
 
-.nav-button {
-    background-color: #4CAF50;
-}
-
-.nav-button:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-}
-
-.edit-button {
-    background-color: #2196F3;
-}
-
-.edit-button:hover {
-    background-color: #1976D2;
-    transform: scale(1.05);
-}
-
-.delete-button {
-    background-color: #f44336;
-}
-
-.delete-button:hover {
-    background-color: #d32f2f;
-    transform: scale(1.05);
-}
-
-/* Estilos para el contenedor del formulario */
-.form-container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    background-color: #f9f9f9;
-    transition: background-color 0.3s, border-color 0.3s;
-    font-family: 'Poppins', sans-serif;
-    color: black;
-}
-
-.form-container.light-mode {
-    background-color: #f9f9f9;
-    border-color: #ccc;
-    color: black;
-}
-
-.form-container.dark-mode {
-    background-color: #444;
-    border-color: #555;
-    color: white;
-}
-
-.form-container h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-.form-container form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.form-container form button,
-.form-container form .nav-button {
-    margin: 10px;
-}
-
-.form-container p {
-    text-align: center;
+.footer-content a:hover {
+    color: var(--accent-color);
 }
 
 
-
+/* Estilos del contenedor de dados */
 .dice-container {
     display: flex;
     justify-content: center;
@@ -849,6 +365,7 @@ body.dark-mode {
     margin-top: 20px;
 }
 
+/* Estilos de los dados */
 .dice {
     width: 100px;
     height: 100px;
@@ -858,13 +375,14 @@ body.dark-mode {
     line-height: 100px;
     border: 2px solid #ccc;
     border-radius: 10px;
-    background-color: var(--light-bg);
-    color: var(--light-text);
+    background-color: var(--background-color);
+    color: var(--text-color);
     transition: transform 1s;
     perspective: 1000px;
     transform-style: preserve-3d;
 }
 
+/* Estilos de las caras de los dados */
 .dice div {
     position: absolute;
     width: 100px;
@@ -874,7 +392,7 @@ body.dark-mode {
     justify-content: center;
     backface-visibility: hidden;
     font-size: 3em;
-    color: var(--light-text);
+    color: var(--text-color);
 }
 
 .front { transform: rotateY(0deg) translateZ(50px); }
@@ -884,7 +402,7 @@ body.dark-mode {
 .top { transform: rotateX(90deg) translateZ(50px); }
 .bottom { transform: rotateX(-90deg) translateZ(50px); }
 
-/* Responsive Design */
+/* Diseño responsive */
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;

@@ -10,9 +10,9 @@
     <a href="{% url 'agregar_publicidad' %}" class="nav-button">Agregar Publicidad</a>
     <h3>Publicidad Izquierda</h3>
     {% if publicidades_izquierda %}
-    <ul>
+    <ul class="ad-list">
         {% for publicidad in publicidades_izquierda %}
-        <li>
+        <li class="ad-item">
             {% if publicidad.archivo.url|is_video %}
             <video width="200" controls>
                 <source src="{{ publicidad.archivo.url }}" type="video/mp4">
@@ -20,8 +20,10 @@
             {% else %}
             <img src="{{ publicidad.archivo.url }}" width="200" alt="Publicidad">
             {% endif %}
-            <a href="{% url 'editar_publicidad' publicidad.id %}" class="edit-button">Editar</a>
-            <a href="{% url 'eliminar_publicidad' publicidad.id %}" class="delete-button">Eliminar</a>
+            <div class="ad-actions">
+                <a href="{% url 'editar_publicidad' publicidad.id %}" class="edit-button">Editar</a>
+                <a href="{% url 'eliminar_publicidad' publicidad.id %}" class="delete-button">Eliminar</a>
+            </div>
         </li>
         {% endfor %}
     </ul>
@@ -30,9 +32,9 @@
     {% endif %}
     <h3>Publicidad Derecha</h3>
     {% if publicidades_derecha %}
-    <ul>
+    <ul class="ad-list">
         {% for publicidad in publicidades_derecha %}
-        <li>
+        <li class="ad-item">
             {% if publicidad.archivo.url|is_video %}
             <video width="200" controls>
                 <source src="{{ publicidad.archivo.url }}" type="video/mp4">
@@ -40,8 +42,10 @@
             {% else %}
             <img src="{{ publicidad.archivo.url }}" width="200" alt="Publicidad">
             {% endif %}
-            <a href="{% url 'editar_publicidad' publicidad.id %}" class="edit-button">Editar</a>
-            <a href="{% url 'eliminar_publicidad' publicidad.id %}" class="delete-button">Eliminar</a>
+            <div class="ad-actions">
+                <a href="{% url 'editar_publicidad' publicidad.id %}" class="edit-button">Editar</a>
+                <a href="{% url 'eliminar_publicidad' publicidad.id %}" class="delete-button">Eliminar</a>
+            </div>
         </li>
         {% endfor %}
     </ul>

@@ -8,11 +8,14 @@
     <ul class="card-list">
         {% for tarjeta in tarjetas %}
             <li class="card-item">
-                <span class="card-holder">{{ tarjeta.nombre_titular }}</span> - **** **** **** {{ tarjeta.numero_tarjeta|slice:"-4" }} (Expira: {{ tarjeta.fecha_expiracion }})
-                <a href="{% url 'editar_tarjeta' tarjeta.id %}" class="edit-button">Editar</a>
-                <a href="{% url 'eliminar_tarjeta' tarjeta.id %}" class="delete-button">Eliminar</a>
+                <span class="card-holder">{{ tarjeta.nombre_titular }}</span> - **** **** **** {{ tarjeta.numero_tarjeta|slice:"-4" }} (Expira: {{ tarjeta.fecha_expiracion|date:"m/Y" }})
+                <div class="card-actions">
+                    <a href="{% url 'editar_tarjeta' tarjeta.id %}" class="edit-button">Editar</a>
+                    <a href="{% url 'eliminar_tarjeta' tarjeta.id %}" class="delete-button">Eliminar</a>
+                </div>
             </li>
         {% endfor %}
     </ul>
+    <button class="nav-button" onclick="location.href='{% url 'agregar_tarjeta' %}'">Agregar Nueva Tarjeta</button>
 </div>
 {% endblock %}

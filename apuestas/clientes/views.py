@@ -5,9 +5,9 @@ from django.views.decorators.http import require_POST
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.contrib.auth.models import User
-from .forms import RegistroClienteForm, ClienteForm, ApuestaForm, AdminUserForm, TarjetaForm, PublicidadForm
+from .forms import ImageForm, RegistroClienteForm, ClienteForm, ApuestaForm, AdminUserForm, TarjetaForm, PublicidadForm
 from django.contrib.auth.forms import AuthenticationForm
-from .models import Cliente, Apuesta, Tarjeta, Publicidad
+from .models import Cliente, Apuesta, Tarjeta, Publicidad, Image
 import csv
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -16,26 +16,26 @@ import base64
 from django.utils.timezone import localtime
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+import datetime
 
-# Create your views here.
-
+# Verifica si el usuario es administrador
 def is_admin(user):
     return user.is_staff
 
+# Vista principal que muestra las imágenes en la página principal
 def index(request):
-    publicidades_izquierda = Publicidad.objects.filter(titulo="Izquierda")
-    publicidades_derecha = Publicidad.objects.filter(titulo="Derecha")
-    return render(request, 'clientes/index.html', {
-        'publicidades_izquierda': publicidades_izquierda,
-        'publicidades_derecha': publicidades_derecha
-    })
+    images = Image.objects.all()
+    images_left = Image.objects.filter(position='left')
+    images_right = Image.objects.filter(position='right')
+    return render(request, 'clientes/index.html', {'images': images, 'images_left': images_left, 'images_right': images_right})
 
-
+# Vista del panel de administrador (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(is_admin)
 def admin_dashboard(request):
     return render(request, 'clientes/admin_dashboard.html')
 
+# Generar un reporte CSV con la información de los clientes (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(is_admin)
 def generar_reporte_csv(request):
@@ -51,6 +51,7 @@ def generar_reporte_csv(request):
 
     return response
 
+# Generar un reporte Excel con la información de los clientes (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(is_admin)
 def generar_reporte_excel(request):
@@ -75,32 +76,139 @@ def generar_reporte_excel(request):
 
     return response
 
+# Generar gráficas de registro de clientes (requiere autenticación y ser administrador)
+def some_logic_to_check_if_recurrent(user):
+    # Un cliente es recurrente si ha realizado más de una apuesta
+    return Apuesta.objects.filter(cliente__user=user).count() > 1
+
+@login_required
+def graficas_cliente(request):
+    cliente = Cliente.objects.get(user=request.user)
+    apuestas = Apuesta.objects.filter(cliente=cliente)
+    fechas_apuestas = [apuesta.fecha.date() for apuesta in apuestas]
+    df = pd.DataFrame(fechas_apuestas, columns=['fecha_apuesta'])
+
+    # Análisis de Actividad del Cliente
+    df['fecha_apuesta'] = pd.to_datetime(df['fecha_apuesta'])
+    df_activity = df.groupby(df['fecha_apuesta'].dt.to_period('M')).count().rename(columns={'fecha_apuesta': 'n_apuestas'})
+
+    plt.figure(figsize=(10, 6))
+    df_activity.plot(kind='line', legend=False)
+    plt.title('Actividad del Cliente por Mes')
+    plt.xlabel('Fecha')
+    plt.ylabel('Número de Apuestas')
+    plt.grid(True)
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    plt.close()
+    image_activity_png = buffer.getvalue()
+    buffer.close()
+    graphic_activity = base64.b64encode(image_activity_png).decode('utf-8')
+
+    return render(request, 'clientes/graficas_cliente.html', {
+        'graphic_activity': graphic_activity
+    })
+
 @login_required
 @user_passes_test(is_admin)
 def graficas(request):
     clientes = Cliente.objects.all()
     fechas_registro = [cliente.fecha_registro.date() for cliente in clientes]
-    fechas = list(set(fechas_registro))
-    fechas.sort()
-    conteo_clientes = [fechas_registro.count(fecha) for fecha in fechas]
+    df = pd.DataFrame(fechas_registro, columns=['fecha_registro'])
+
+    # Análisis de Tendencias
+    df['fecha_registro'] = pd.to_datetime(df['fecha_registro'])
+    df_trends = df.groupby(df['fecha_registro'].dt.to_period('M')).count().rename(columns={'fecha_registro': 'registros'})
 
     plt.figure(figsize=(10, 6))
-    plt.plot(fechas, conteo_clientes, marker='o')
-    plt.title('Número de Clientes Registrados por Fecha')
+    df_trends.plot(kind='line', legend=False)
+    plt.title('Número de Clientes Registrados por Mes')
     plt.xlabel('Fecha')
     plt.ylabel('Número de Clientes')
     plt.grid(True)
-
     buffer = BytesIO()
     plt.savefig(buffer, format='png')
     plt.close()
-    image_png = buffer.getvalue()
+    image_trends_png = buffer.getvalue()
     buffer.close()
-    graphic = base64.b64encode(image_png)
-    graphic = graphic.decode('utf-8')
+    graphic_trends = base64.b64encode(image_trends_png).decode('utf-8')
 
-    return render(request, 'clientes/graficas.html', {'graphic': graphic})
+    # Análisis Demográfico
+    df['edad'] = df.apply(lambda row: datetime.datetime.now().year - row.fecha_registro.year, axis=1)
+    df_demographic = df.groupby(['sexo', 'edad']).count().unstack().fillna(0)
 
+    plt.figure(figsize=(10, 6))
+    df_demographic.plot(kind='bar', stacked=True)
+    plt.title('Distribución de Clientes por Sexo y Edad')
+    plt.xlabel('Edad')
+    plt.ylabel('Número de Clientes')
+    plt.legend(title='Sexo')
+    plt.grid(True)
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    plt.close()
+    image_demographic_png = buffer.getvalue()
+    buffer.close()
+    graphic_demographic = base64.b64encode(image_demographic_png).decode('utf-8')
+
+    # Seguimiento del Crecimiento
+    df_growth = df.groupby(df['fecha_registro'].dt.to_period('M')).count().rename(columns={'fecha_registro': 'registros'}).cumsum()
+    plt.figure(figsize=(10, 6))
+    df_growth.plot(kind='line', legend=False)
+    plt.title('Crecimiento de la Base de Clientes por Mes')
+    plt.xlabel('Fecha')
+    plt.ylabel('Total de Clientes')
+    plt.grid(True)
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    plt.close()
+    image_growth_png = buffer.getvalue()
+    buffer.close()
+    graphic_growth = base64.b64encode(image_growth_png).decode('utf-8')
+
+    # Detección de Caídas
+    df_drops = df.groupby(df['fecha_registro'].dt.to_period('M')).count().rename(columns={'fecha_registro': 'registros'})
+    df_drops['dif'] = df_drops['registros'].diff()
+    plt.figure(figsize=(10, 6))
+    df_drops['dif'].plot(kind='bar', legend=False)
+    plt.title('Diferencia en Registros de Clientes por Mes')
+    plt.xlabel('Fecha')
+    plt.ylabel('Cambio en Número de Clientes')
+    plt.grid(True)
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    plt.close()
+    image_drops_png = buffer.getvalue()
+    buffer.close()
+    graphic_drops = base64.b64encode(image_drops_png).decode('utf-8')
+
+    # Análisis de Retención
+    df['user'] = df.index.map(lambda i: clientes[i].user.id)  # Obtener los IDs de usuario de los clientes
+    df['es_recurrente'] = df['user'].apply(some_logic_to_check_if_recurrent)
+    df_retention = df.groupby(['fecha_registro', 'es_recurrente']).count().unstack().fillna(0)
+    plt.figure(figsize=(10, 6))
+    df_retention.plot(kind='bar', stacked=True)
+    plt.title('Retención de Clientes por Mes')
+    plt.xlabel('Fecha')
+    plt.ylabel('Número de Clientes')
+    plt.legend(title='Es Recurrente')
+    plt.grid(True)
+    buffer = BytesIO()
+    plt.savefig(buffer, format='png')
+    plt.close()
+    image_retention_png = buffer.getvalue()
+    buffer.close()
+    graphic_retention = base64.b64encode(image_retention_png).decode('utf-8')
+
+    return render(request, 'clientes/graficas.html', {
+        'graphic_trends': graphic_trends,
+        'graphic_demographic': graphic_demographic,
+        'graphic_growth': graphic_growth,
+        'graphic_drops': graphic_drops,
+        'graphic_retention': graphic_retention
+    })
+
+# Lista de clientes (requiere autenticación)
 @login_required
 def clientes_list(request):
     if request.user.is_staff:
@@ -108,7 +216,7 @@ def clientes_list(request):
     else:
         clientes = Cliente.objects.filter(user=request.user)
     
-    paginator = Paginator(clientes, 25)  # Mostrar 25 clientes por página.
+    paginator = Paginator(clientes, 25)  # Mostrar 25 clientes por página
     page = request.GET.get('page')
     try:
         clientes_paged = paginator.page(page)
@@ -119,6 +227,7 @@ def clientes_list(request):
 
     return render(request, 'clientes/clientes_list.html', {'clientes': clientes_paged})
 
+# Detalle de un cliente (requiere autenticación)
 @login_required
 def cliente_detail(request, id):
     cliente = get_object_or_404(Cliente, id=id)
@@ -127,6 +236,7 @@ def cliente_detail(request, id):
     else:
         return redirect('clientes_list')
 
+# Crear un nuevo cliente (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(is_admin)
 def cliente_create(request):
@@ -145,7 +255,7 @@ def cliente_create(request):
         form = ClienteForm()
     return render(request, 'clientes/cliente_form.html', {'form': form})
 
-
+# Actualizar un cliente (requiere autenticación)
 @login_required
 def cliente_update(request, id):
     cliente = get_object_or_404(Cliente, id=id)
@@ -154,28 +264,35 @@ def cliente_update(request, id):
             form = ClienteForm(request.POST, instance=cliente)
             if form.is_valid():
                 form.save()
+                messages.success(request, 'Cliente actualizado exitosamente.')
                 return redirect('clientes_list')
+            else:
+                messages.error(request, 'Error en el formulario. Por favor, revisa los datos.')
         else:
             form = ClienteForm(instance=cliente)
         return render(request, 'clientes/cliente_form.html', {'form': form})
     else:
         return redirect('clientes_list')
 
+# Eliminar un cliente (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(is_admin)
 def cliente_delete(request, id):
     cliente = get_object_or_404(Cliente, id=id)
     if request.method == 'POST':
         cliente.delete()
+        messages.success(request, 'Cliente eliminado exitosamente.')
         return redirect('clientes_list')
     return render(request, 'clientes/cliente_confirm_delete.html', {'cliente': cliente})
 
+# Lista de usuarios administradores (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(is_admin)
 def admin_user_list(request):
     users = User.objects.all()
     return render(request, 'clientes/admin_user_list.html', {'users': users})
 
+# Crear un nuevo usuario administrador (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(is_admin)
 def admin_user_create(request):
@@ -183,11 +300,15 @@ def admin_user_create(request):
         form = AdminUserForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Usuario administrador creado exitosamente.')
             return redirect('admin_user_list')
+        else:
+            messages.error(request, 'Error en el formulario. Por favor, revisa los datos.')
     else:
         form = AdminUserForm()
     return render(request, 'clientes/admin_user_form.html', {'form': form})
 
+# Actualizar un usuario administrador (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(is_admin)
 def admin_user_update(request, id):
@@ -196,20 +317,26 @@ def admin_user_update(request, id):
         form = AdminUserForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Usuario administrador actualizado exitosamente.')
             return redirect('admin_user_list')
+        else:
+            messages.error(request, 'Error en el formulario. Por favor, revisa los datos.')
     else:
         form = AdminUserForm(instance=user)
     return render(request, 'clientes/admin_user_form.html', {'form': form})
 
+# Eliminar un usuario administrador (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(is_admin)
 def admin_user_delete(request, id):
     user = get_object_or_404(User, id=id)
     if request.method == 'POST':
         user.delete()
+        messages.success(request, 'Usuario administrador eliminado exitosamente.')
         return redirect('admin_user_list')
     return render(request, 'clientes/admin_user_confirm_delete.html', {'user': user})
 
+# Registro de clientes
 def registro_cliente(request):
     if request.method == 'POST':
         form = RegistroClienteForm(request.POST)
@@ -223,6 +350,7 @@ def registro_cliente(request):
         form = RegistroClienteForm()
     return render(request, 'clientes/registro_cliente.html', {'form': form})
 
+# Login para clientes
 def login_cliente(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -244,6 +372,7 @@ def login_cliente(request):
         form = AuthenticationForm()
     return render(request, 'clientes/login_cliente.html', {'form': form})
 
+# Login para administradores
 def login_admin(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -260,18 +389,23 @@ def login_admin(request):
         form = AuthenticationForm()
     return render(request, 'clientes/login_admin.html', {'form': form})
 
+# Cerrar sesión de cliente (requiere autenticación)
 @login_required
 @require_POST
 def logout_cliente(request):
     logout(request)
+    messages.success(request, 'Has cerrado sesión exitosamente.')
     return redirect('index')
 
+# Cerrar sesión de administrador (requiere autenticación)
 @login_required
 @require_POST
 def logout_admin(request):
     logout(request)
+    messages.success(request, 'Has cerrado sesión exitosamente.')
     return redirect('index')
 
+# Crear una nueva apuesta (requiere autenticación)
 @login_required
 def apuesta_create(request):
     if request.method == 'POST':
@@ -280,11 +414,15 @@ def apuesta_create(request):
             apuesta = form.save(commit=False)
             apuesta.cliente = get_object_or_404(Cliente, user=request.user)
             apuesta.save()
+            messages.success(request, 'Apuesta creada exitosamente.')
             return redirect('apuestas_list')
+        else:
+            messages.error(request, 'Error en el formulario. Por favor, revisa los datos.')
     else:
         form = ApuestaForm()
     return render(request, 'clientes/apuesta_form.html', {'form': form})
 
+# Lista de apuestas (requiere autenticación)
 @login_required
 def apuestas_list(request):
     if request.user.is_staff:
@@ -292,8 +430,19 @@ def apuestas_list(request):
     else:
         cliente = get_object_or_404(Cliente, user=request.user)
         apuestas = Apuesta.objects.filter(cliente=cliente)
-    return render(request, 'clientes/apuestas_list.html', {'apuestas': apuestas})
+    
+    paginator = Paginator(apuestas, 25)  # Mostrar 25 apuestas por página
+    page = request.GET.get('page')
+    try:
+        apuestas_paged = paginator.page(page)
+    except PageNotAnInteger:
+        apuestas_paged = paginator.page(1)
+    except EmptyPage:
+        apuestas_paged = paginator.page(paginator.num_pages)
 
+    return render(request, 'clientes/apuestas_list.html', {'apuestas': apuestas_paged})
+
+# Perfil del cliente (requiere autenticación)
 @login_required
 def perfil_cliente(request):
     cliente = get_object_or_404(Cliente, user=request.user)
@@ -301,35 +450,43 @@ def perfil_cliente(request):
         form = ClienteForm(request.POST, instance=cliente)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Perfil actualizado exitosamente.')
             return redirect('perfil_cliente')
+        else:
+            messages.error(request, 'Error en el formulario. Por favor, revisa los datos.')
     else:
         form = ClienteForm(instance=cliente)
     return render(request, 'clientes/perfil_cliente.html', {'form': form})
 
+# Historial de apuestas del cliente (requiere autenticación)
 @login_required
 def historial_apuestas(request):
     cliente = get_object_or_404(Cliente, user=request.user)
     apuestas = Apuesta.objects.filter(cliente=cliente)
     return render(request, 'clientes/historial_apuestas.html', {'apuestas': apuestas})
 
+# Lista de apuestas del cliente (requiere autenticación)
 @login_required
 def mis_apuestas(request):
     cliente = get_object_or_404(Cliente, user=request.user)
     apuestas = Apuesta.objects.filter(cliente=cliente)
     return render(request, 'clientes/mis_apuestas.html', {'apuestas': apuestas})
 
+# Lista de tarjetas (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(is_admin)
 def listar_tarjetas(request):
     tarjetas = Tarjeta.objects.all()
     return render(request, 'clientes/listar_tarjetas.html', {'tarjetas': tarjetas})
 
+# Lista de tarjetas del cliente (requiere autenticación)
 @login_required
 def listar_tarjetas_cliente(request):
     cliente = get_object_or_404(Cliente, user=request.user)
     tarjetas = Tarjeta.objects.filter(cliente=cliente)
     return render(request, 'clientes/listar_tarjetas_cliente.html', {'tarjetas': tarjetas})
 
+# Agregar una nueva tarjeta (requiere autenticación)
 @login_required
 def agregar_tarjeta(request):
     if request.method == 'POST':
@@ -338,11 +495,15 @@ def agregar_tarjeta(request):
             tarjeta = form.save(commit=False)
             tarjeta.cliente = get_object_or_404(Cliente, user=request.user)
             tarjeta.save()
+            messages.success(request, 'Tarjeta agregada exitosamente.')
             return redirect('listar_tarjetas_cliente')
+        else:
+            messages.error(request, 'Error en el formulario. Por favor, revisa los datos.')
     else:
         form = TarjetaForm()
     return render(request, 'clientes/agregar_tarjeta.html', {'form': form})
 
+# Editar una tarjeta (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(is_admin)
 def editar_tarjeta(request, id):
@@ -351,20 +512,26 @@ def editar_tarjeta(request, id):
         form = TarjetaForm(request.POST, instance=tarjeta)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Tarjeta actualizada exitosamente.')
             return redirect('listar_tarjetas')
+        else:
+            messages.error(request, 'Error en el formulario. Por favor, revisa los datos.')
     else:
         form = TarjetaForm(instance=tarjeta)
     return render(request, 'clientes/agregar_tarjeta.html', {'form': form})
 
+# Eliminar una tarjeta (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(is_admin)
 def eliminar_tarjeta(request, id):
     tarjeta = get_object_or_404(Tarjeta, id=id)
     if request.method == 'POST':
         tarjeta.delete()
+        messages.success(request, 'Tarjeta eliminada exitosamente.')
         return redirect('listar_tarjetas')
     return render(request, 'clientes/eliminar_tarjeta.html', {'tarjeta': tarjeta})
 
+# Lista de publicidades (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def lista_publicidad(request):
@@ -375,6 +542,7 @@ def lista_publicidad(request):
         'publicidades_derecha': publicidades_derecha
     })
 
+# Agregar una nueva publicidad (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def agregar_publicidad(request):
@@ -382,11 +550,15 @@ def agregar_publicidad(request):
         form = PublicidadForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Publicidad agregada exitosamente.')
             return redirect('lista_publicidad')
+        else:
+            messages.error(request, 'Error en el formulario. Por favor, revisa los datos.')
     else:
         form = PublicidadForm()
     return render(request, 'clientes/agregar_publicidad.html', {'form': form})
 
+# Editar una publicidad (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def editar_publicidad(request, id):
@@ -395,16 +567,60 @@ def editar_publicidad(request, id):
         form = PublicidadForm(request.POST, request.FILES, instance=publicidad)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Publicidad actualizada exitosamente.')
             return redirect('lista_publicidad')
+        else:
+            messages.error(request, 'Error en el formulario. Por favor, revisa los datos.')
     else:
         form = PublicidadForm(instance=publicidad)
     return render(request, 'clientes/editar_publicidad.html', {'form': form})
 
+# Eliminar una publicidad (requiere autenticación y ser administrador)
 @login_required
 @user_passes_test(lambda u: u.is_staff)
 def eliminar_publicidad(request, id):
     publicidad = get_object_or_404(Publicidad, id=id)
     if request.method == 'POST':
         publicidad.delete()
+        messages.success(request, 'Publicidad eliminada exitosamente.')
         return redirect('lista_publicidad')
     return render(request, 'clientes/eliminar_publicidad.html', {'publicidad': publicidad})
+
+# Subir una imagen (requiere autenticación)
+@login_required
+def upload_image(request):
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Imagen subida exitosamente.')
+            return redirect('manage_images')
+        else:
+            messages.error(request, 'Error en el formulario. Por favor, revisa los datos.')
+    else:
+        form = ImageForm()
+    return render(request, 'clientes/upload_image.html', {'form': form})
+
+# Gestionar imágenes (requiere autenticación)
+@login_required
+def manage_images(request):
+    images = Image.objects.all()
+    return render(request, 'clientes/manage_images.html', {'images': images})
+
+# Eliminar una imagen (requiere autenticación)
+@login_required
+def delete_image(request, image_id):
+    image = get_object_or_404(Image, id=image_id)
+    image.delete()
+    messages.success(request, 'Imagen eliminada exitosamente.')
+    return redirect('manage_images')
+
+def acerca_de(request):
+    return render(request, 'clientes/acerca_de.html')
+
+def mision(request):
+    return render(request, 'clientes/mision.html')
+
+def vision(request):
+    return render(request, 'clientes/vision.html')
+

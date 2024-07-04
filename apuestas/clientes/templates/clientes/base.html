@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}Mi Aplicación de Apuestas{% endblock %}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Artmy+Ornament&display=swap" rel="stylesheet">
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
-<body class="light-mode">
+<body class="{% if request.user.is_authenticated and request.user.profile.theme == 'dark' %}dark-mode{% else %}light-mode{% endif %}">
     <header>
-        <nav class="navbar light-mode">
+        <nav class="navbar {% if request.user.is_authenticated and request.user.profile.theme == 'dark' %}dark-mode{% else %}light-mode{% endif %}">
             <div class="navbar-brand">
                 <a href="{% url 'index' %}" class="nav-button">Inicio</a>
             </div>
-            <ul>
+            <ul class="navbar-links">
                 {% if user.is_authenticated %}
                     {% if user.is_staff %}
                         <li><a href="{% url 'admin_dashboard' %}" class="nav-button">Dashboard Admin</a></li>
@@ -23,7 +24,7 @@
                         <li><a href="{% url 'generar_reporte_excel' %}" class="nav-button">Reporte Excel</a></li>
                         <li><a href="{% url 'graficas' %}" class="nav-button">Ver Gráficas</a></li>
                         <li><a href="{% url 'listar_tarjetas' %}" class="nav-button">Ver Tarjetas</a></li>
-                        <li><a href="{% url 'lista_publicidad' %}" class="nav-button">Gestionar Publicidad</a></li>
+                        <li><a href="{% url 'manage_images' %}" class="nav-button">Gestionar Publicidad</a></li>
                         <li>
                             <form id="logout-form-admin" action="{% url 'logout_admin' %}" method="post" style="display: none;">
                                 {% csrf_token %}
@@ -37,6 +38,7 @@
                         <li><a href="{% url 'mis_apuestas' %}" class="nav-button">Mis Apuestas</a></li>
                         <li><a href="{% url 'listar_tarjetas_cliente' %}" class="nav-button">Ver Tarjetas</a></li>
                         <li><a href="{% url 'agregar_tarjeta' %}" class="nav-button">Agregar Tarjeta</a></li>
+                        <li><a href="{% url 'graficas_cliente' %}" class="nav-button">Mis Gráficas</a></li>
                         <li>
                             <form id="logout-form" action="{% url 'logout_cliente' %}" method="post" style="display: none;">
                                 {% csrf_token %}
@@ -50,27 +52,45 @@
                     <li><a href="{% url 'registro_cliente' %}" class="nav-button">Registrarse</a></li>
                     <li><a href="{% url 'password_reset' %}" class="nav-button">Restablecer Contraseña</a></li>
                 {% endif %}
-                <li><button id="mode-toggle" class="nav-button">Modo Oscuro</button></li>
+                <li><a href="{% url 'acerca_de' %}" class="nav-button">Acerca de</a></li>
+                <li><a href="{% url 'mision' %}" class="nav-button">Misión</a></li>
+                <li><a href="{% url 'vision' %}" class="nav-button">Visión</a></li>
+                <li>
+                    <button id="mode-toggle" class="nav-button theme-toggle-button">
+                        <i id="theme-icon" class="fas {% if request.user.is_authenticated and request.user.profile.theme == 'dark' %}fa-sun{% else %}fa-moon{% endif %}"></i>
+                    </button>
+                </li>
             </ul>
         </nav>
     </header>
     <main>
         <div class="publicidad-container">
             <div class="publicidad-izquierda">
-                {% for publicidad in publicidades_izquierda %}
-                    <img src="{{ publicidad.archivo.url }}" alt="Publicidad">
+                {% for image in images_left %}
+                    <img src="{{ image.image.url }}" alt="{{ image.title }}" style="width: 45%; margin: 10px 0;">
                 {% endfor %}
             </div>
             <div class="content">
                 {% block content %}{% endblock %}
             </div>
             <div class="publicidad-derecha">
-                {% for publicidad in publicidades_derecha %}
-                    <img src="{{ publicidad.archivo.url }}" alt="Publicidad">
+                {% for image in images_right %}
+                    <img src="{{ image.image.url }}" alt="{{ image.title }}" style="width: 45%; margin: 10px 0;">
                 {% endfor %}
             </div>
         </div>
     </main>
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2024 CrudOS. Todos los derechos reservados.</p>
+            <p>Síguenos en:
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </p>
+        </div>
+    </footer>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const modeToggle = document.getElementById('mode-toggle');
@@ -78,41 +98,29 @@
             const navbar = document.querySelector('.navbar');
             const formContainers = document.querySelectorAll('.form-container, .form-container form input');
 
-            modeToggle.addEventListener('click', () => {
-                body.classList.toggle('dark-mode');
-                body.classList.toggle('light-mode');
-                navbar.classList.toggle('dark-mode');
-                navbar.classList.toggle('light-mode');
+            const updateMode = (isDarkMode) => {
+                body.classList.toggle('dark-mode', isDarkMode);
+                body.classList.toggle('light-mode', !isDarkMode);
+                navbar.classList.toggle('dark-mode', isDarkMode);
+                navbar.classList.toggle('light-mode', !isDarkMode);
                 formContainers.forEach(container => {
-                    container.classList.toggle('dark-mode');
-                    container.classList.toggle('light-mode');
+                    container.classList.toggle('dark-mode', isDarkMode);
+                    container.classList.toggle('light-mode', !isDarkMode);
                 });
-                modeToggle.textContent = body.classList.contains('dark-mode') ? 'Modo Claro' : 'Modo Oscuro';
-                localStorage.setItem('mode', body.classList.contains('dark-mode') ? 'dark' : 'light');
+                document.getElementById('theme-icon').classList.toggle('fa-sun', isDarkMode);
+                document.getElementById('theme-icon').classList.toggle('fa-moon', !isDarkMode);
+            };
+
+            modeToggle.addEventListener('click', () => {
+                const isDarkMode = !body.classList.contains('dark-mode');
+                updateMode(isDarkMode);
+                localStorage.setItem('mode', isDarkMode ? 'dark' : 'light');
             });
 
             // Inicializa el modo según la preferencia guardada
-            if (localStorage.getItem('mode') === 'dark') {
-                body.classList.add('dark-mode');
-                body.classList.remove('light-mode');
-                navbar.classList.add('dark-mode');
-                navbar.classList.remove('light-mode');
-                formContainers.forEach(container => {
-                    container.classList.add('dark-mode');
-                    container.classList.remove('light-mode');
-                });
-                modeToggle.textContent = 'Modo Claro';
-            } else {
-                body.classList.add('light-mode');
-                body.classList.remove('dark-mode');
-                navbar.classList.add('light-mode');
-                navbar.classList.remove('dark-mode');
-                formContainers.forEach(container => {
-                    container.classList.add('light-mode');
-                    container.classList.remove('dark-mode');
-                });
-                modeToggle.textContent = 'Modo Oscuro';
-            }
+            const savedMode = localStorage.getItem('mode');
+            const isDarkMode = savedMode === 'dark';
+            updateMode(isDarkMode);
         });
     </script>
     {% block scripts %}{% endblock %}

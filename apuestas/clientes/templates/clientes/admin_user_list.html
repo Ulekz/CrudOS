@@ -6,10 +6,10 @@
 <div class="form-container">
     <h1>Lista de Usuarios</h1>
     <button class="nav-button" onclick="location.href='{% url 'admin_user_create' %}'">Agregar nuevo usuario</button>
-    <ul>
+    <ul class="client-list">
         {% for user in users %}
-            <li>
-                {{ user.username }}
+            <li class="client-item">
+                <span class="client-name">{{ user.username }}</span>
                 <button class="edit-button" onclick="location.href='{% url 'admin_user_update' user.id %}'">Editar</button>
                 <button class="delete-button" onclick="location.href='{% url 'admin_user_delete' user.id %}'">Eliminar</button>
             </li>

@@ -5,6 +5,20 @@
 {% block content %}
 <div class="form-container">
     <h2>Gráficas</h2>
-    <img src="data:image/png;base64,{{ graphic }}" alt="Gráfica de Clientes Registrados" class="chart-img">
+    
+    <h3>Análisis de Tendencias</h3>
+    <img src="data:image/png;base64,{{ graphic_trends }}" alt="Gráfica de Clientes Registrados por Mes" class="chart-img">
+    
+    <h3>Análisis Demográfico</h3>
+    <img src="data:image/png;base64,{{ graphic_demographic }}" alt="Distribución de Clientes por Sexo y Edad" class="chart-img">
+    
+    <h3>Crecimiento de la Base de Clientes</h3>
+    <img src="data:image/png;base64,{{ graphic_growth }}" alt="Crecimiento de la Base de Clientes por Mes" class="chart-img">
+    
+    <h3>Detección de Caídas</h3>
+    <img src="data:image/png;base64,{{ graphic_drops }}" alt="Diferencia en Registros de Clientes por Mes" class="chart-img">
+    
+    <h3>Análisis de Retención</h3>
+    <img src="data:image/png;base64,{{ graphic_retention }}" alt="Retención de Clientes por Mes" class="chart-img">
 </div>
 {% endblock %}
