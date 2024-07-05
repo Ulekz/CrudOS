@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Mi Aplicación de Apuestas{% endblock %}</title>
+    <title>{% block title %}Aplicación de Apuestas{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Artmy+Ornament&display=swap" rel="stylesheet">
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
@@ -12,7 +12,7 @@
     <header>
         <nav class="navbar {% if request.user.is_authenticated and request.user.profile.theme == 'dark' %}dark-mode{% else %}light-mode{% endif %}">
             <div class="navbar-brand">
-                <a href="{% url 'index' %}" class="nav-button">Inicio</a>
+                <a href="{% url 'index' %}" class="nav-button">CrudOS Home</a>
             </div>
             <ul class="navbar-links">
                 {% if user.is_authenticated %}
