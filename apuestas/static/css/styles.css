@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Artmy+Ornament&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Snap+ITC&display=swap');
 
 /* Definición de variables de colores y estilos */
 :root {
@@ -19,7 +19,7 @@
 
 /* Estilos generales del cuerpo */
 body {
-    font-family: 'Artmy Ornament', sans-serif;
+    font-family: 'Snap ITC', sans-serif;
     margin: 0;
     padding: 0;
     transition: background-color 0.3s, color 0.3s;
@@ -58,10 +58,10 @@ body.dark-mode {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 1200px;
+    max-width: auto;
     margin: 0 auto;
     transition: background-color 0.3s;
-    flex-wrap: wrap;
+    flex-wrap: wrap;    
 }
 
 /* Contenedor del Navbar */
@@ -75,7 +75,7 @@ body.dark-mode {
 
 /* Estilo de la marca del Navbar */
 .navbar-brand {
-    font-family: 'Artmy Ornament', sans-serif;
+    font-family: 'Snap ITC', sans-serif;
     font-size: 1.5rem;
     
     color: var(--background-color);
@@ -104,7 +104,7 @@ body.dark-mode {
     text-align: center;
     margin: 5px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    font-family: 'Artmy Ornament', sans-serif; /* Aplicar la fuente */
+    font-family: 'Snap ITC', sans-serif; /* Aplicar la fuente */
 }
 
 /* Efecto hover para los enlaces y botones del Navbar */
@@ -150,12 +150,12 @@ body.dark-mode {
 /* Estilos del contenedor del formulario */
 .form-container {
     max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
+    margin: 60px auto;
+    padding: 40px;
     border: 1px solid var(--input-border);
     border-radius: 15px;
     transition: background-color 0.3s, border-color 0.3s;
-    font-family: 'Artmy Ornament', sans-serif;
+    font-family: 'Snap ITC', sans-serif;
     text-align: left;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     background-color: var(--background-color);
@@ -229,7 +229,7 @@ body.dark-mode {
     transition: background-color 0.3s, transform 0.3s;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-top: 10px;
-    font-family: 'Artmy Ornament', sans-serif; /* Aplicar la fuente */
+    font-family: 'Snap ITC', sans-serif; /* Aplicar la fuente */
 }
 
 /* Efecto hover para los botones del formulario */
@@ -249,7 +249,7 @@ body.dark-mode {
     font-size: 14px;
     border-radius: 25px;
     transition: background-color 0.3s, transform 0.3s;
-    font-family: 'Artmy Ornament', sans-serif; /* Aplicar la fuente */
+    font-family: 'Snap ITC', sans-serif; /* Aplicar la fuente */
 }
 
 /* Efecto hover para el botón de edición */
@@ -273,7 +273,7 @@ body.dark-mode {
 .nav-link {
     color: var(--primary-color);
     text-decoration: none;
-    font-family: 'Artmy Ornament', sans-serif; /* Aplicar la fuente */
+    font-family: 'Snap ITC', sans-serif; /* Aplicar la fuente */
 }
 
 /* Efecto hover para los enlaces */
