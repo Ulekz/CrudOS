@@ -1,15 +1,15 @@
 {% extends 'clientes/base.html' %}
 
-{% block title %}Nuevo Usuario{% endblock %}
+{% block title %}Administrar Usuario{% endblock %}
 
 {% block content %}
 <div class="form-container">
-    <h1>Nuevo Usuario</h1>
+    <h2>{% if form.instance.pk %}Editar{% else %}Crear{% endif %} Usuario Administrador</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="button">Guardar</button>
-        <a href="{% url 'admin_user_list' %}" class="nav-button cancel-button">Cancelar</a>
+        <button type="submit" class="nav-button">{% if form.instance.pk %}Actualizar{% else %}Crear{% endif %}</button>
+        <button type="button" class="nav-button" onclick="location.href='{% url 'admin_user_list' %}'">Cancelar</button>
     </form>
 </div>
 {% endblock %}

@@ -42,4 +42,5 @@ urlpatterns = [
     path('acerca_de/', views.acerca_de, name='acerca_de'),
     path('mision/', views.mision, name='mision'),
     path('vision/', views.vision, name='vision'),
+    path('soporte_tecnico/', views.soporte_tecnico, name='soporte_tecnico'),
 ]

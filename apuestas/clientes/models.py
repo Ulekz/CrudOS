@@ -69,7 +69,7 @@ class Cliente(models.Model):
         """
         Devuelve el nombre completo del cliente.
         """
-        return f"{self.user.first_name} {self.user.last_name}"
+        return f'{self.nombre} {self.apellido_paterno} {self.apellido_materno}'
 
     def __str__(self):
         return self.get_full_name()

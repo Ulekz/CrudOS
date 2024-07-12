@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -17,6 +18,7 @@ from django.utils.timezone import localtime
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import datetime
+from django.core.mail import send_mail
 
 # Verifica si el usuario es administrador
 def is_admin(user):
@@ -303,6 +305,7 @@ def admin_user_create(request):
             messages.success(request, 'Usuario administrador creado exitosamente.')
             return redirect('admin_user_list')
         else:
+            print("Formulario inválido en creación:", form.errors)
             messages.error(request, 'Error en el formulario. Por favor, revisa los datos.')
     else:
         form = AdminUserForm()
@@ -320,6 +323,8 @@ def admin_user_update(request, id):
             messages.success(request, 'Usuario administrador actualizado exitosamente.')
             return redirect('admin_user_list')
         else:
+            print("Formulario inválido en actualización:", form.errors)
+            print("Datos recibidos en actualización:", request.POST)
             messages.error(request, 'Error en el formulario. Por favor, revisa los datos.')
     else:
         form = AdminUserForm(instance=user)
@@ -342,8 +347,11 @@ def registro_cliente(request):
         form = RegistroClienteForm(request.POST)
         if form.is_valid():
             cliente = form.save()
+            # Autenticar y loguear al usuario
+            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
+            login(request, user)
             messages.success(request, 'Registro exitoso. Por favor, inicia sesión.')
-            return redirect('login_cliente')
+            return redirect('index')  # Redirigir a la página de inicio
         else:
             messages.error(request, 'Error en el registro. Por favor, revisa el formulario.')
     else:
@@ -453,6 +461,8 @@ def perfil_cliente(request):
             messages.success(request, 'Perfil actualizado exitosamente.')
             return redirect('perfil_cliente')
         else:
+            print("Formulario inválido:", form.errors)
+            print("Datos recibidos:", request.POST)
             messages.error(request, 'Error en el formulario. Por favor, revisa los datos.')
     else:
         form = ClienteForm(instance=cliente)
@@ -624,3 +634,20 @@ def mision(request):
 def vision(request):
     return render(request, 'clientes/vision.html')
 
+def soporte_tecnico(request):
+    if request.method == 'POST':
+        nombre = request.POST['nombre']
+        email = request.POST['email']
+        mensaje = request.POST['mensaje']
+        # Enviar correo electrónico (configura tus ajustes de correo en settings.py)
+        send_mail(
+            f'Soporte Técnico - {nombre}',
+            mensaje,
+            email,
+            ['soporte@CrudOS.com'],
+            fail_silently=False,
+        )
+        messages.success(request, 'Tu mensaje ha sido enviado exitosamente.')
+    return render(request, 'clientes/soporte_tecnico.html')
+
+        

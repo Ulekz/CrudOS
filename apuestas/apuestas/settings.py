@@ -140,3 +140,12 @@ LOGOUT_REDIRECT_URL = '/'
 # Media files (Uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# Logica para enviar correos 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.example.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'your_email@example.com' #cambiar por email real
+EMAIL_HOST_PASSWORD = 'your_password' # contraseña del correo real
+DEFAULT_FROM_EMAIL = 'your_email@example.com' #email de la empresa o personal segun el caso 

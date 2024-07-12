@@ -1,11 +1,11 @@
 {% extends 'clientes/base.html' %}
 
-{% block title %}Registrar Cliente{% endblock %}
+{% block title %}Registrar Usuario{% endblock %}
 
 {% block content %}
 <div class="form-container">
-    <h2>Registrar Cliente</h2>
-    <form method="post" class="form">
+    <h2>Registrar Usuario</h2>
+    <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="nav-button">Registrar</button>

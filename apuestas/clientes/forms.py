@@ -43,16 +43,21 @@ class RegistroClienteForm(forms.ModelForm):
             raise forms.ValidationError("La contraseña debe tener al menos 8 caracteres.")
         return password2
 
-    def clean_dia_nacimiento(self):
-        # Validar que la fecha de nacimiento sea válida
-        dia = self.cleaned_data.get('dia_nacimiento')
-        mes = self.cleaned_data.get('mes_nacimiento')
-        anio = self.cleaned_data.get('anio_nacimiento')
+    def clean(self):
+        cleaned_data = super().clean()
+        dia = cleaned_data.get('dia_nacimiento')
+        mes = cleaned_data.get('mes_nacimiento')
+        anio = cleaned_data.get('anio_nacimiento')
+
+        if dia is None or mes is None or anio is None:
+            raise forms.ValidationError("La fecha de nacimiento es obligatoria.")
+
         try:
             datetime.date(anio, mes, dia)
         except ValueError:
             raise forms.ValidationError("Fecha de nacimiento inválida.")
-        return dia
+
+        return cleaned_data
 
     def save(self, commit=True):
         # Crear el usuario y el cliente asociado
@@ -72,11 +77,34 @@ class ClienteForm(forms.ModelForm):
     class Meta:
         model = Cliente
         fields = [
-            'nombre', 'apellido_paterno', 'apellido_materno', 'direccion', 'codigo_postal',
-            'estado', 'municipio', 'estado_civil', 'sexo', 'dia_nacimiento', 
-            'mes_nacimiento', 'anio_nacimiento', 'email', 'telefono'
+            'nombre', 'apellido_paterno', 'apellido_materno', 'direccion', 
+            'codigo_postal', 'estado', 'municipio', 'estado_civil', 'sexo', 
+            'dia_nacimiento', 'mes_nacimiento', 'anio_nacimiento', 'email', 'telefono'
         ]
 
+    def clean(self):
+        cleaned_data = super().clean()
+        dia = cleaned_data.get('dia_nacimiento')
+        mes = cleaned_data.get('mes_nacimiento')
+        anio = cleaned_data.get('anio_nacimiento')
+
+        if dia is None or mes is None or anio is None:
+            raise forms.ValidationError("La fecha de nacimiento es obligatoria.")
+
+        try:
+            dia = int(dia)
+            mes = int(mes)
+            anio = int(anio)
+        except ValueError:
+            raise forms.ValidationError("La fecha de nacimiento debe ser un número válido.")
+
+        try:
+            datetime.date(anio, mes, dia)
+        except ValueError:
+            raise forms.ValidationError("Fecha de nacimiento inválida.")
+
+        return cleaned_data
+    
 # Formulario para crear una apuesta
 class ApuestaForm(forms.ModelForm):
     class Meta:

@@ -1,14 +1,15 @@
 {% extends 'clientes/base.html' %}
 
-{% block title %}Perfil del Cliente{% endblock %}
+{% block title %}Perfil de Cliente{% endblock %}
 
 {% block content %}
 <div class="form-container">
-    <h2>Perfil del Cliente</h2>
+    <h2>Perfil de Cliente</h2>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit" class="nav-button">Guardar Cambios</button>
+        <button type="submit" class="nav-button">Actualizar</button>
+        <button type="button" class="nav-button" onclick="location.href='{% url 'index' %}'">Cancelar</button>
     </form>
 </div>
 {% endblock %}

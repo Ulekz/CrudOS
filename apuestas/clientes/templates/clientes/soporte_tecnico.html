@@ -1,0 +1,30 @@
+{% extends 'clientes/base.html' %}
+
+{% block title %}Soporte Técnico{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Soporte Técnico</h2>
+    <p>Si tienes alguna duda, problema o necesitas asistencia, no dudes en contactarnos. Estamos aquí para ayudarte.</p>
+    <h3>Contacto</h3>
+    <p>Email: soporte@CrudOS.com</p>
+    <p>Teléfono: +52 123 456 7890</p>
+    <h3>Formulario de Contacto</h3>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" class="input-field" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" class="input-field" required>
+        </div>
+        <div class="form-group">
+            <label for="mensaje">Mensaje:</label>
+            <textarea id="mensaje" name="mensaje" rows="4" class="textarea-field" required></textarea>
+        </div>
+        <button type="submit" class="nav-button">Enviar</button>
+    </form>
+</div>
+{% endblock %}
