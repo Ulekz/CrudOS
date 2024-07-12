@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'clientes',
+    'clientes', # agregar nombre de la app
 ]
 
 MIDDLEWARE = [
@@ -148,4 +148,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'your_email@example.com' #cambiar por email real
 EMAIL_HOST_PASSWORD = 'your_password' # contraseña del correo real
-DEFAULT_FROM_EMAIL = 'your_email@example.com' #email de la empresa o personal segun el caso 
+DEFAULT_FROM_EMAIL = 'your_email@example.com' # email de la empresa o personal segun el caso 

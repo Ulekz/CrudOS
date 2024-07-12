@@ -19,6 +19,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 import datetime
 from django.core.mail import send_mail
+from django.db.models import Sum
 
 # Verifica si el usuario es administrador
 def is_admin(user):
@@ -75,6 +76,82 @@ def generar_reporte_excel(request):
 
     with pd.ExcelWriter(response, engine='openpyxl') as writer:
         df.to_excel(writer, index=False)
+
+    return response
+
+@login_required
+@user_passes_test(is_admin)
+def generar_reporte_historico_apuestas(request):
+    """
+    Genera un reporte CSV con el historial de apuestas por cliente.
+
+    El reporte incluye el ID del cliente, el nombre del cliente y el monto total de las apuestas
+    realizadas por cada cliente.
+
+    Args:
+        request: Objeto HttpRequest que contiene información sobre la solicitud actual.
+
+    Returns:
+        HttpResponse: Respuesta HTTP que contiene el archivo CSV adjunto.
+    """
+    apuestas = Apuesta.objects.all()
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="historico_apuestas.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['ID Cliente', 'Nombre Cliente', 'Monto Total de Apuestas'])
+
+    clientes = Cliente.objects.all()
+    for cliente in clientes:
+        total_apuestas = apuestas.filter(cliente=cliente).aggregate(total=Sum('monto'))['total']
+        if total_apuestas is None:
+            total_apuestas = 0
+        writer.writerow([cliente.id, cliente.get_full_name(), total_apuestas])
+
+    return response
+
+@login_required
+@user_passes_test(is_admin)
+def generar_reporte_historico_apuestas_excel(request):
+    """
+    Genera un reporte Excel con el historial de apuestas por cliente.
+
+    El reporte incluye el ID del cliente, el nombre del cliente, cada una de sus apuestas con la fecha
+    y el monto total de las apuestas realizadas por cada cliente.
+
+    Args:
+        request: Objeto HttpRequest que contiene información sobre la solicitud actual.
+
+    Returns:
+        HttpResponse: Respuesta HTTP que contiene el archivo Excel adjunto.
+    """
+    apuestas = Apuesta.objects.all()
+    clientes = Cliente.objects.all()
+
+    data = []
+    for cliente in clientes:
+        apuestas_cliente = apuestas.filter(cliente=cliente)
+        total_apuestas = apuestas_cliente.aggregate(total=Sum('monto'))['total'] or 0
+        for apuesta in apuestas_cliente:
+            data.append({
+                'ID Cliente': cliente.id,
+                'Nombre Cliente': cliente.get_full_name(),
+                'Monto de Apuesta': apuesta.monto,
+                'Fecha de Apuesta': apuesta.fecha.replace(tzinfo=None),  # Eliminar la información de la zona horaria
+            })
+        data.append({
+            'ID Cliente': '',
+            'Nombre Cliente': 'Total:',
+            'Monto de Apuesta': total_apuestas,
+            'Fecha de Apuesta': '',
+        })
+
+    df = pd.DataFrame(data)
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="historico_apuestas.xlsx"'
+
+    with pd.ExcelWriter(response, engine='openpyxl') as writer:
+        df.to_excel(writer, index=False, sheet_name='Histórico de Apuestas')
 
     return response
 
