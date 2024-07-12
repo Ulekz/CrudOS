@@ -133,8 +133,8 @@ class Publicidad(models.Model):
 # Modelo Image
 class Image(models.Model):
     POSITION_CHOICES = [
-        ('left', 'Izquierda'),
-        ('right', 'Derecha'),
+        ('left', 'Arriba'),
+        ('right', 'Abajo'),
     ]
 
     title = models.CharField(max_length=255)  # Título de la imagen
